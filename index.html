@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <title>VIP</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+        <script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
+        <script src="https://www.gstatic.com/charts/loader.js"></script>
+    </head>
+
+<style>
+#result {
+    font-size: 28px;
+}
+
+#search {
+    background-color: #;
+}
+#search:hover {
+    background-color: #;
+}
+</style>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="jumbotron">
+                    <h1 style="color: #DB0000;">Vip客戶專用</h1>
+                    <p>貨品價目搜尋表</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-10">
+
+        <div class="input-group">
+            <input id="id-input" type="text" class="form-control" placeholder="請輸入貨號">
+            <span class="input-group-btn">
+                <button id="search" class="btn btn-default" type="button">搜尋</button>
+            </span>
+        </div><!-- /input-group -->
+        <br>
+        <div id="result"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+$('#search').click(runQuery);
+
+function runQuery() {
+    console.log('aaa');
+    google.charts.load('visualization', '1',
+        {
+            'packages': ['corechart', 'table', 'geomap']
+        }
+    );
+    google.charts.setOnLoadCallback(queryPrice);
+}
+
+function queryPrice() {
+    var id = $('#id-input').val();
+    if (!id) return; // prevent empty input
+
+    $('#result').text('讀取中...');
+    console.log('before query');
+    var myUrl = 'https://docs.google.com/spreadsheets/d/1dUvRku50pHIB7m6pK7uFj_vX6jnkwRfOiYINwDpzJM8/gviz/tq?sheet=clothesprice';
+    var query = new google.visualization.Query(myUrl);
+    query.setQuery("select B where A = '" + id + "'");
+    query.send(function(res) {
+        try {
+            $('#result').text(id + ' 價格：' + res.getDataTable().getValue(0, 0));
+        } catch(err) {
+            console.log(err);
+            $('#result').text('無此貨號');
+        }
+    });
+}
+</script>
+</html>
